@@ -2,6 +2,7 @@ package backEnd;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.channels.FileLock;
 
 public class Wallet {
     /**
@@ -44,5 +45,35 @@ public class Wallet {
      */
     public void close() throws Exception {
 	this.file.close();
+    }
+
+    /**
+     * Safely withdraws money from the wallet using file locking
+     * to prevent race conditions
+     * @param valueToWithdraw amount to with draw
+     * @return
+     * @throws
+     */
+    public boolean safeWithdraw(int valueToWithdraw) throws Exception {
+        FileLock lock = null;
+        boolean success = false;
+
+        try {
+            lock = this.file.getChannel().lock();
+            if (lock != null) {
+                int currentBalance = getBalance();
+                if (currentBalance >= valueToWithdraw) {
+                    success = true;
+                    setBalance(currentBalance - valueToWithdraw);
+                }
+            } else {
+                throw new IllegalStateException("Wallet is being used");
+            }
+            return success;
+        } finally {
+            if (lock != null && lock.isValid()) {
+                lock.release();
+            }
+        }
     }
 }
