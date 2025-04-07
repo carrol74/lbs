@@ -22,5 +22,5 @@
 
 ## Part 2
 
-1. `pocket.addProduct`
-2. 
+1. `pocket.addProduct` is also vulnerable to race conditions. When multiple concurrent requests attempt to add products to the pocket file, simultaneous writes can lead to data inconsistencies. Each operation on the shared file is performed independently without any locking or coordination, allowing interleaved execution that may corrupt the final state of the file.
+2. These protections are sufficient because they address the sections where race conditions occur  by making critical operations atomic. By applying synchronization only to specific operations that manipulate shared resources, we minimize performance overhead.

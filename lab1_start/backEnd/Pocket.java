@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 
 
 public class Pocket {
@@ -29,6 +31,20 @@ public class Pocket {
     public void addProduct(String product) throws Exception {
         this.file.seek(this.file.length());
         this.file.writeBytes(product+'\n'); 
+    }
+
+    public void safeAddProduct(String product) throws Exception {
+        FileLock lock = null;
+        try {
+            lock = this.file.getChannel().lock();
+            addProduct(product);
+        } catch (OverlappingFileLockException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (lock != null && lock.isValid()) {
+                lock.release();
+            }
+        }
     }
 
     /**

@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 
 public class Wallet {
     /**
@@ -66,10 +67,10 @@ public class Wallet {
                     success = true;
                     setBalance(currentBalance - valueToWithdraw);
                 }
-            } else {
-                throw new IllegalStateException("Wallet is being used");
             }
             return success;
+        } catch (OverlappingFileLockException e) {
+            throw new RuntimeException(e);
         } finally {
             if (lock != null && lock.isValid()) {
                 lock.release();
