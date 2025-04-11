@@ -33,6 +33,7 @@ public class ShoppingCart {
                 if (wallet.safeWithdraw(price)) {
                     pocket.addProduct(product);
                 } else {
+                    System.out.print("Insufficient balance");
                     System.exit(0);
                 }
             } else {

@@ -36,6 +36,8 @@ We lock only the file, and only for the shortest necessary duration of the criti
 It fully protects against multiprocessing-based TOCTOU attacks where `synchronized` or `static lock` in Java would be ineffective as it can only protect against multithreading-based attacks.  
 By applying synchronization only to specific operations that manipulate shared resources to make those critical operations atomic, we avoid potential TOCTOU attacks and minimize performance overhead.
 
-![image-20250411225311443](/Users/carol/Documents/ALG/ALG-3/lbs/lbsLab/lab1_start/report_img/3.png)
+![image-20250411232339971](/Users/carol/Documents/ALG/ALG-3/lbs/lbsLab/lab1_start/report_img/3.png)
 
-![image-20250411225402316](/Users/carol/Documents/ALG/ALG-3/lbs/lbsLab/lab1_start/report_img/4.png)The attack by using the breakpoint from Part 1 now fails.
+![image-20250411232418850](/Users/carol/Documents/ALG/ALG-3/lbs/lbsLab/lab1_start/report_img/4.png)
+
+The attack by using the breakpoint from Part 1 now fails.
