@@ -22,9 +22,9 @@ To achieve the delay, we use breakpoints to delay the IDE's balance check.
    As a result, the original 30,000 balance ends up purchasing two cars.
 
 
-![image-20250403212440848](/Users/huyushu/Library/Application Support/typora-user-images/image-20250403212440848.png)
+![image-20250403212440848](./report_img/1.png)
 
-![image-20250403212555781](/Users/huyushu/Library/Application Support/typora-user-images/image-20250403212555781.png)
+![image-20250403212555781](./report_img/2.png)
 
 ## Part 2
 
