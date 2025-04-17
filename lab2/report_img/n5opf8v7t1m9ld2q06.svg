@@ -1,0 +1,53 @@
+<svg viewBox="0 -10 450 450" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stack Frame -->
+  <rect x="100" y="50" width="250" height="330" fill="none" stroke="black" stroke-width="2"/>
+  
+  <!-- High Memory Label -->
+  <text x="220" y="40" text-anchor="middle" font-family="Arial" font-size="16">High Memory Address</text>
+  
+  <!-- Low Memory Label -->
+  <text x="220" y="400" text-anchor="middle" font-family="Arial" font-size="16">Low Memory Address</text>
+  
+  <!-- Environment Variables -->
+  <rect x="110" y="60" width="230" height="40" fill="#a8e6cf" stroke="black" stroke-width="1"/>
+  <text x="220" y="85" text-anchor="middle" font-family="Arial" font-size="14">Environment Variables</text>
+  
+  <!-- Program Arguments -->
+  <rect x="110" y="100" width="230" height="65" fill="#dcedc1" stroke="black" stroke-width="1"/>
+  <text x="220" y="120" text-anchor="middle" font-family="Arial" font-size="14">Program Arguments</text>
+  <text x="220" y="135" text-anchor="middle" font-family="Arial" font-size="12">char *ip </text>
+  <text x="220" y="145" text-anchor="middle" font-family="Arial" font-size="12">char *hostname</text>
+  <text x="220" y="155" text-anchor="middle" font-family="Arial" font-size="12">char *alias</text>
+  
+  <!-- Return Address -->
+  <rect x="110" y="165" width="230" height="55" fill="#ff8a65" stroke="black" stroke-width="1"/>
+  <text x="220" y="190" text-anchor="middle" font-family="Arial" font-size="14">Return Address</text>
+  <text x="220" y="205" fill="#f00000" text-anchor="middle" font-family="Arial" font-size="13">(Target to Overwrite)</text>
+  
+  <!-- Saved EBP -->
+  <rect x="110" y="220" width="230" height="40" fill="#ffcc80" stroke="black" stroke-width="1"/>
+  <text x="220" y="245" text-anchor="middle" font-family="Arial" font-size="14">Saved EBP</text>
+  
+  <!-- Format Buffer -->
+  <rect x="110" y="260" width="230" height="60" fill="#81d4fa" stroke="black" stroke-width="1"/>
+  <text x="220" y="285" text-anchor="middle" font-family="Arial" font-size="14">Format Buffer (256 bytes)</text>
+  <text x="220" y="305" text-anchor="middle" font-family="Arial" font-size="12">Contains format string exploit</text>
+  
+  <!-- Other Local Variables -->
+  <rect x="110" y="320" width="230" height="40" fill="#b39ddb" stroke="black" stroke-width="1"/>
+  <text x="220" y="345" text-anchor="middle" font-family="Arial" font-size="14">Other Local Variables</text>
+  
+  <!-- Arrow Definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+  </defs>
+  
+  <!-- Exploit Flow Arrows
+  <path d="M 250 300 C 350 280 350 240 280 220" stroke="#ff4081" stroke-width="2" fill="none" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  <text x="350" y="260" text-anchor="middle" font-family="Arial" font-size="12" fill="#ff4081">Format String Attack</text>
+  
+  <path d="M 250 60 C 50 100 50 180 100 220" stroke="#4caf50" stroke-width="2" fill="none" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  <text x="50" y="150" text-anchor="middle" font-family="Arial" font-size="12" fill="#4caf50">Shellcode Execution</text> -->
+</svg>
