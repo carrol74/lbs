@@ -33,7 +33,7 @@ typora-copy-images-to: ./report_img
 
 Looking at the assembly instruction `lea 0xffffff00(%ebp),%eax`  we can determine the `formatbuffer` begins at `%ebp - 0x100` (256 bytes below the base pointer).
 
-<img src="/n5opf8v7t1m9ld2q06.svg" alt="n5opf8v7t1m9ld2q06" />
+<img src="./report_img/n5opf8v7t1m9ld2q06.svg" alt="n5opf8v7t1m9ld2q06" />
 
 ### 2. Run with padding
 
@@ -56,14 +56,14 @@ run $(python -c 'print "A"*256') BB CC
 
 | break *0x08048563                                        | break * 0x08048569                                       |
 | -------------------------------------------------------- | -------------------------------------------------------- |
-| ![image-20250417153324946](/image-20250417153324946.png) | ![image-20250417153356662](/image-20250417153356662.png) |
-| ![image-20250417162655885](/image-20250417162655885.png) | ![image-20250417162729710](/image-20250417162729710.png) |
+| ![image-20250417153324946](./report_img/image-20250417153324946.png) | ![image-20250417153356662](/image-20250417153356662.png) |
+| ![image-20250417162655885](./report_img/image-20250417162655885.png) | ![image-20250417162729710](/image-20250417162729710.png) |
 
 We can see that the saved ebp has been overwritten by "\tBB\t" and save eip has been overwritten by "CC\n". This matches  the stack addresses we had drawn up, confirming that the buffer overflow worked as expected.
 
 Note that gdb can only debug a setuid or setgid program if the debugger is running as root. So when continue in gdb we would see fopen error. Instead, use inspection commands to determine whether the overflow succeeded in following steps.
 
-<img src="/image-20250417154113983.png" alt="image-20250417154113983" style="zoom:50%;" />
+<img src="./report_img/image-20250417154113983.png" alt="image-20250417154113983" style="zoom:50%;" />
 
 ### 3. Build Shellcode
 
@@ -91,7 +91,7 @@ print arg2
 print arg3
 ```
 
-<img src="/image-20250417201711159.png" alt="image-20250417201711159" style="zoom:50%;" />
+<img src="./report_img/image-20250417201711159.png" alt="image-20250417201711159" style="zoom:50%;" />
 
 #### 3.2 Key shellcode
 
@@ -177,11 +177,11 @@ print arg3
 
 Debugging under GDB, we can see that the saved return address (EIP) has been overwritten with `0xbffffa8c`, exactly the value we injected.
 
-<img src="/image-20250417205038772.png" alt="image-20250417205038772" style="zoom:50%;" />
+<img src="./report_img/image-20250417205038772.png" alt="image-20250417205038772" style="zoom:50%;" />
 
-![s88j4ll240hm9lqni93](/s88j4ll240hm9lqni93.svg)
+![s88j4ll240hm9lqni93](./report_img/s88j4ll240hm9lqni93.svg)
 
-<img src="/image-20250417211507256.png" alt="image-20250417211507256" style="zoom:50%;" />
+<img src="./report_img/image-20250417211507256.png" alt="image-20250417211507256" style="zoom:50%;" />
 
 Finally, the prompt `sh-2.05a#` confirms that we have successfully exploited the buffer overflow vulnerability, executed our shellcode, and spawned a shell with root privileges.
 
@@ -199,7 +199,7 @@ In root shell, create a hidden user with root privileges (UID 0).
 
 TODO:隐蔽性
 
-<img src="/image-20250417215812484.png" alt="image-20250417215812484" style="zoom:50%;" />
+<img src="./report_img/image-20250417215812484.png" alt="image-20250417215812484" style="zoom:50%;" />
 
 
 
