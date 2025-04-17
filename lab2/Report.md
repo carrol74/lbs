@@ -54,10 +54,10 @@ Use padding to find the offset to allow us to control the instruction.
 run $(python -c 'print "A"*256') BB CC
 ```
 
-| break *0x08048563                                        | break * 0x08048569                                       |
-| -------------------------------------------------------- | -------------------------------------------------------- |
-| ![image-20250417153324946](./report_img/image-20250417153324946.png) | ![image-20250417153356662](/image-20250417153356662.png) |
-| ![image-20250417162655885](./report_img/image-20250417162655885.png) | ![image-20250417162729710](/image-20250417162729710.png) |
+| break *0x08048563                                            | break * 0x08048569                                           |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![image-20250417153324946](./report_img/image-20250417153324946.png) | ![image-20250417153356662](./report_img/image-20250417153356662.png) |
+| ![image-20250417162655885](./report_img/image-20250417162655885.png) | ![image-20250417162729710](./report_img/image-20250417162729710.png) |
 
 We can see that the saved ebp has been overwritten by "\tBB\t" and save eip has been overwritten by "CC\n". This matches  the stack addresses we had drawn up, confirming that the buffer overflow worked as expected.
 
