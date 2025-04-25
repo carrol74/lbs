@@ -138,20 +138,13 @@ static char shellcode[] =
  "\x90\x90\x90\x90";
 ```
 
-TODO:The shellcode is doing a couple of important instructions (see the explanation of the shellcode below) before starting the shell. What is the shellcode exploiting with how addhostalias is configured, why does it execute these instructions, and what would happen if those instructions were not executed? See the “important instructions” below to spot the important parts of the shellcode.
+Since `addhostalias` is configured as a setuid-root binary, it executes with the effective user ID (UID) of the root user while retaining the real UID of the invoking (unprivileged) user. This privilege mismatch is central to the exploit.
 
-When a SUID program runs, it executes with the real UID of the invoking user but the effective UID of the file owner (likely root). Modern Unix shells have a security feature that drops privileges by resetting the effective UID to match the real UID when they detect they're being run from a SUID context.
+The shellcode exploits this vulnerability by first manipulating the process’s UID and group ID (GID) attributes. Using the `setreuid` and `setresgid` system calls, the shellcode permanently sets both the real and effective UID/GID values to root (0). After locking in root privileges, the shellcode launches `/bin/sh`. With both real and effective UID/GID set to root, the shell operates with unrestricted access.
 
-By calling `setreuid` and `setregid`, the shellcode permanently sets both the real and effective user/group IDs to root before spawning `/bin/sh`. This prevents the shell from dropping privileges.
+If the UID/GID synchronization steps were omitted, the exploit would fail. The spawned shell would detect the discrepancy between the real UID (unprivileged user) and effective UID (root) inherited from the setuid context. It would then reset the effective UID to match the real UID, dropping privileges back to the unprivileged user. The attacker would gain only a normal user shell, rendering the exploit ineffective.  
 
-If these instructions were omitted:
-
-- The spawned shell would detect the SUID environment
-- It would drop privileges by setting the effective UID to match the real UID
-- The attacker would end up with a regular user shell instead of a root shell
-- The privilege escalation attempt would fail
-
-
+#### 3.3 Exploit Python
 
 Having confirmed the trap, we now substitute the `INT3` with the provided shellcode, rebuild the NOP sled accordingly.
 
@@ -197,8 +190,6 @@ echo "hiddenuser::19000:0:99999:7:::" >> /etc/shadow
 
 In root shell, create a hidden user with root privileges (UID 0).
 
-TODO:隐蔽性
-
 <img src="./report_img/image-20250417215812484.png" alt="image-20250417215812484" style="zoom:50%;" />
 
 
@@ -207,6 +198,40 @@ TODO:隐蔽性
 
 #### 5.1 Language Level
 
+- Use Safe Functions.
+
+  Replace unsafe functions like `sprintf` with safe alternatives `snprintf`.
+
+- Input Validation
+
+  Verify that user input is in the correct format. For example, reject input containing "%" characters to prevent format string attacks.
+
+- Static code analysis tools
+
+  Use tools to find overflows that you accidentally wrote, and then fix the problems.
+
 #### 5.2 Run-time level
 
+- Compiler Protection
+
+  Modern compilers like gcc offer built-in protections against common vulnerabilities.
+
+  `gcc -fstack-protector / fstack-protector-all` 
+
+  Inserts a guard variable onto the stack frame for each vulnerable function or for all functions.
+
+  `gcc -fsanitize=address`
+
+  These tools would quickly detect memory errors and report the buffer overflow and format string vulnerabilities when they occur during testing.
+
+- Dynamic run-time checks
+
+   This preloaded component either provides safer versions of standard unsafe functions or protects return addresses from being overwritten. **Libsafe** provices this approach by securing vulnerable function calls by following frame pointers to identify the correct stack frame, measuring the distance to the nearest return address, and ensuring this address remains intact during function execution.
+
 #### 5.3 Operating system Level
+
+- Address Space Layout Randomization (ASLR)
+
+  Randomizes the memory address space of processes, making it difficult for attackers to predict memory addresses. 
+
+- 
