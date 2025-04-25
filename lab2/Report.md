@@ -191,7 +191,15 @@ echo "hiddenuser::19000:0:99999:7:::" >> /etc/shadow
 In root shell, create a hidden user with root privileges (UID 0).
 
 <img src="./report_img/image-20250417215812484.png" alt="image-20250417215812484" style="zoom:50%;" />
+  
+  
+To maintain persistent and stealthy root access, considering:
 
+1. Bash History and Log Manipulation.   
+Disable or sanitize `.bash_history` to erase traces of malicious commands, but a suspiciously short or empty `.bash_history` file may arouse attentions of admin. Thus we may delete selectively -- remove only exploit-related commands. To avoid time gaps, use `unset HISTFILE` during attacks to avoid logging and restore it afterward to mimic normal behavior. Similarly when altering system logs, gaps in timestamps or missing authentication events are red flags, try selective deletion and insert decoy entries to mimic normal activity.
+
+2. Backdoor Installation.  
+Replace legitimate critical SUID binaries (e.g., `/bin/bash`) with a modified version that grants root when executed. To evade detection, the malicious binary’s metadata including file size, timestamps, and permissions should be aligned with the original (e.g., preserve the original file size using padding, set the modified time to match legitimate binaries). Concurrently, use root cron jobs to periodically re-add the hidden user if removed.
 
 
 ### 5. Countermeasures
@@ -234,4 +242,6 @@ In root shell, create a hidden user with root privileges (UID 0).
 
   Randomizes the memory address space of processes, making it difficult for attackers to predict memory addresses. 
 
-- 
+- File Integrity Monitoring  
+    
+    AIDE (Advanced Intrusion Detection Environment) to monitor critical files (e.g., `/etc/passwd`, SUID binaries) for unauthorized changes.
