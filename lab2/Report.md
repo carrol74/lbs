@@ -73,7 +73,15 @@ Once we have the target address, we can pad the buffer with the shellcode and NO
 
 Attack string example could be:
 
-`([NOP sled] + [Shellcode] + [Padding]) + [Return Address] = 256 + 4 = 260 bytes`
+`([NOP sled] + [Shellcode] + [Padding]) + [Return Address] = 256 +4 + 4 = 264 bytes`
+
+- 256 bytes : `formatbuffer` storage space
+- 4 bytes : saved ebp
+- 4 bytes : injected new target address
+
+Looking at the code in `add_alias`:
+`sprintf(formatbuffer, "%s\t%s\t%s\n", ip, hostname, alias);`
+We can see that after the first two arguments (ip and hostname), there's a tab character (\t) inserted. This means we can use just 3 bytes for each of these arguments input since the tab character will be automatically inserted after them.
 
 ```python
 import struct
@@ -191,8 +199,8 @@ echo "hiddenuser::19000:0:99999:7:::" >> /etc/shadow
 In root shell, create a hidden user with root privileges (UID 0).
 
 <img src="./report_img/image-20250417215812484.png" alt="image-20250417215812484" style="zoom:50%;" />
-  
-  
+
+
 To maintain persistent and stealthy root access, considering:
 
 1. Bash History and Log Manipulation.   
@@ -212,7 +220,7 @@ Replace legitimate critical SUID binaries (e.g., `/bin/bash`) with a modified ve
 
 - Input Validation
 
-  Verify that user input is in the correct format. For example, reject input containing "%" characters to prevent format string attacks.
+  Verify that user input is in the correct format. For example, reject input containing "\x90" which is typically used for used for buffer overflow exploits.
 
 - Static code analysis tools
 
@@ -243,5 +251,5 @@ Replace legitimate critical SUID binaries (e.g., `/bin/bash`) with a modified ve
   Randomizes the memory address space of processes, making it difficult for attackers to predict memory addresses. 
 
 - File Integrity Monitoring  
-    
+  
     AIDE (Advanced Intrusion Detection Environment) to monitor critical files (e.g., `/etc/passwd`, SUID binaries) for unauthorized changes.
