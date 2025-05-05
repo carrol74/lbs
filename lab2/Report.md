@@ -59,6 +59,10 @@ run $(python -c 'print "A"*256') BB CC
 | ![image-20250417153324946](./report_img/image-20250417153324946.png) | ![image-20250417153356662](./report_img/image-20250417153356662.png) |
 | ![image-20250417162655885](./report_img/image-20250417162655885.png) | ![image-20250417162729710](./report_img/image-20250417162729710.png) |
 
+From info frame we know the address of saved ebp and eip (return address), which is right after 256 ‘A’s padding in our gdb breakpoint analysis.
+
+To overwrite the return address, we need to overflow the buffer (256 bytes) and save ebp (4 bytes), in total 260 bytes. The return address should point to the middle of NOPs, and then slides to our shellcode.
+
 We can see that the saved ebp has been overwritten by "\tBB\t" and save eip has been overwritten by "CC\n". This matches  the stack addresses we had drawn up, confirming that the buffer overflow worked as expected.
 
 Note that gdb can only debug a setuid or setgid program if the debugger is running as root. So when continue in gdb we would see fopen error. Instead, use inspection commands to determine whether the overflow succeeded in following steps.
@@ -82,6 +86,11 @@ Attack string example could be:
 Looking at the code in `add_alias`:
 `sprintf(formatbuffer, "%s\t%s\t%s\n", ip, hostname, alias);`
 We can see that after the first two arguments (ip and hostname), there's a tab character (\t) inserted. This means we can use just 3 bytes for each of these arguments input since the tab character will be automatically inserted after them.
+
+Note:
+The payload we construct is actually `payload = arg1 +'\t' + arg2 +'\t' + arg3 = 260 bytes`, where `arg3 = NOP_sled + shellcode + padding + eip(overwritten return address)`.
+
+Of course, we can only exploit the first argument as `payload = (nop_sled + shellcode + padding) <260 bytes> + eip <4 bytes>` and other two dummy arguments when run addhostalias as `addhostalias $(python ~/exploit.py) arg2 arg3`
 
 ```python
 import struct
@@ -220,7 +229,11 @@ Replace legitimate critical SUID binaries (e.g., `/bin/bash`) with a modified ve
 
 - Input Validation
 
-  Verify that user input is in the correct format. For example, reject input containing "\x90" which is typically used for used for buffer overflow exploits.
+  Verify that user input is in the correct format. For example, reject input containing "\x90" which is typically used for used for buffer overflow exploits.   
+  Validate the length of user input to ensure it does not exceed the buffer capacity (256 bytes). For example:  
+  `if (strlen(user_input) >= 256) { exit(1); }`  
+  This can directly prevent buffer overflow by truncating oversized inputs.  
+  (rejecting input containing "%" characters is for format string vulnerabilities).
 
 - Static code analysis tools
 
