@@ -48,7 +48,7 @@ Group80: Yushu Hu, Ruijin Wang
 
 5. Login as an admin successfully:
 
-   ![image-20250428115438367](report_img/image-20250428115438367.png)
+   ![image-20250428115438367](report_img/image%202025-05-07%20225723.png)
 
 ### 3. Countermeasures (Defense-in-Depth)
 
