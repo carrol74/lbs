@@ -64,7 +64,7 @@ It returned `/usr/src/app`.
     ```
     Dockerfile,calc.js,docker.zip,flag.txt,index.html,node_modules,package-lock.json,package.json,server.js
     ```
-    where we found `flag.txt`, also `docker.zip`. 
+    where we found `flag.txt`, also `docker.zip`.   
     ![alt text](image-7.png)
 
 13. Read the flag by:
